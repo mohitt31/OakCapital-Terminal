@@ -206,7 +206,7 @@ export default function TerminalLayout() {
   const controls = useTradeControls(marketView.lastPrice, selectedSymbol, (request) => feed.executeOrder(request))
   const controlsRef = useRef(controls)
   const bot = useAlphaBot(feed, selectedSymbol)
-  const [showBotEditor, setShowBotEditor] = useState(false)
+  const [showBotEditor, setShowBotEditor] = useState(() => searchParams.get('bot') === 'true')
 
   useEffect(() => {
     controlsRef.current = controls
@@ -238,7 +238,7 @@ export default function TerminalLayout() {
 
   const [leftWidth, setLeftWidth] = useState(15)
   const [rightDrawerWidth, setRightDrawerWidth] = useState(320)
-  const [rightNavTab, setRightNavTab] = useState<string | null>('controls')
+  const [rightNavTab, setRightNavTab] = useState<string | null>(() => searchParams.get('tab') || 'controls')
 
   const toggleRightNav = (tab: string) => {
     setRightNavTab((prev) => (prev === tab ? null : tab))

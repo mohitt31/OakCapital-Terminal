@@ -1,7 +1,12 @@
 # 🏛️ OakCapital: High-Frequency Trading Engine & Quant Terminal
 
 <div align="center">
-  <img src="./assets/demo_terminal.png" alt="OakCapital Demo" width="800">
+  <img src="./assets/demo_terminal.png" alt="Terminal UI" width="100%">
+</div>
+<br/>
+<div align="center">
+  <img src="./assets/demo_bot.png" alt="Algotrading Bot Builder" width="49%">
+  <img src="./assets/demo_portfolio.png" alt="Portfolio Manager" width="49%">
 </div>
 
 *Developed for the IIT Kharagpur OpenSoft General Championship (🏆 2nd Prize Winner)*
