@@ -1,7 +1,7 @@
 # 🏛️ OakCapital: High-Frequency Trading Engine & Quant Terminal
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x400.png?text=Add+GIF/Video+Demo+Here" alt="OakCapital Demo">
+  <img src="./assets/demo_terminal.png" alt="OakCapital Demo" width="800">
 </div>
 
 *Developed for the IIT Kharagpur OpenSoft General Championship (🏆 2nd Prize Winner)*
