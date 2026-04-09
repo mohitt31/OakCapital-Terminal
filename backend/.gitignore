@@ -1,0 +1,32 @@
+.DS_Store
+.vscode
+.idea
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.development
+.env.test
+.env.production
+.env.local
+.env.development.local
+.env.test.local
+# Build artifacts
+server
+Matching-Engine/build/
+Matching-Engine/build-matching/
+Matching-Engine/build-*/
+**/CMakeFiles/
+**/CMakeCache.txt
+**/a.out
+bin/
+lib/
+*.dylib
+*.so
+*.dll
+*.exe
+
+# Project binaries
+mmbot
+server

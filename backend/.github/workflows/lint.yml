@@ -1,0 +1,48 @@
+name: Lint and Format Checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  go-lint:
+    name: Go format and vet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+
+      - name: Format Go code
+        run: gofmt -w .
+
+      - name: Check gofmt formatting
+        shell: bash
+        run: |
+          files="$(git ls-files '*.go')"
+          if [ -z "$files" ]; then
+            echo "No Go files found."
+            exit 0
+          fi
+
+          unformatted="$(gofmt -l $files)"
+          if [ -n "$unformatted" ]; then
+            echo "These files are not gofmt-formatted:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: Run go vet (if module/workspace exists)
+        shell: bash
+        run: |
+          if [ -f go.mod ] || [ -f go.work ]; then
+            go vet ./...
+          else
+            echo "go.mod/go.work not found, skipping go vet."
+          fi

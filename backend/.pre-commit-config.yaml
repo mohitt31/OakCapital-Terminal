@@ -1,0 +1,27 @@
+default_stages: [pre-commit, pre-push]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: gofmt
+        name: gofmt (auto-fix formatting)
+        entry: gofmt -w
+        language: system
+        files: \.go$
+        stages: [pre-commit]
+
+      - id: govet
+        name: go vet
+        entry: sh -c 'CGO_ENABLED=1 go vet ./...'
+        language: system
+        files: \.go$
+        pass_filenames: false
+        stages: [pre-push]

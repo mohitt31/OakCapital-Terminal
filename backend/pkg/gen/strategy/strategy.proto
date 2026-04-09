@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package strategy;
+
+option go_package = "synthbull/pkg/gen/strategy";
+
+// The service definition for the trading strategy.
+service TradingStrategy {
+  // OnMarketData is called when a new market tick is received.
+  rpc OnMarketData(MarketTick) returns (TradeDecision) {}
+}
+
+// MarketTick represents a snapshot of market data.
+message MarketTick {
+  string symbol = 1;
+  double bid = 2;
+  double ask = 3;
+  double last_price = 4;
+  int64 volume = 5;
+  int64 timestamp_ns = 6;
+  // The current value of the user's portfolio for this symbol.
+  double portfolio_value = 7;
+}
+
+// TradeDecision represents the bot's decision after processing a market tick.
+message TradeDecision {
+  enum Action {
+    HOLD = 0;
+    BUY = 1;
+    SELL = 2;
+  }
+  Action action = 1;
+  double quantity = 2;
+  // If limit_price is 0, it's a market order.
+  double limit_price = 3;
+}
