@@ -266,9 +266,9 @@ func NewBotStatusWriter(sub *eventbus.Subscriber) *BotStatusWriter {
 // or a global stream as bots are created.
 //
 // For a production system, recommend:
-//   1. Maintaining a registry of active bot IDs
-//   2. Dynamically subscribing to each bot's status channel
-//   3. Persisting status changes for audit/replay purposes
+//  1. Maintaining a registry of active bot IDs
+//  2. Dynamically subscribing to each bot's status channel
+//  3. Persisting status changes for audit/replay purposes
 func (w *BotStatusWriter) StartGlobal(ctx context.Context, onBotStatus func(eventbus.BotStatusEvent) error) {
 	w.sub.ConsumeBotStatusGroup(ctx, "db-writer", "dbw-node-0", func(ctx context.Context, ev eventbus.BotStatusEvent) error {
 		if err := onBotStatus(ev); err != nil {
@@ -300,9 +300,9 @@ func NewPortfolioWriter(sub *eventbus.Subscriber) *PortfolioWriter {
 // (internal/portfolio/manager.go) on a 2-second timer, not through the event bus.
 //
 // If you want to:
-//   1. Audit every portfolio change → consume portfolio events from pub/sub
-//   2. Maintain a complete history → subscribe to per-user portfolio topics
-//   3. Trigger downstream analytics → use this writer
+//  1. Audit every portfolio change → consume portfolio events from pub/sub
+//  2. Maintain a complete history → subscribe to per-user portfolio topics
+//  3. Trigger downstream analytics → use this writer
 func (w *PortfolioWriter) StartGlobal(ctx context.Context, onPortfolio func(eventbus.PortfolioEvent) error) {
 	// Portfolio persistence is handled by internal/portfolio/manager.go (2-second flush timer).
 	// This writer is available for additional snapshot auditing if needed.

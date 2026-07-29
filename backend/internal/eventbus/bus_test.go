@@ -224,8 +224,8 @@ func TestStreamCandleClosed(t *testing.T) {
 		Symbol:   "SOL",
 		Interval: "1s",
 		Open:     14500, High: 14600, Low: 14490, Close: 14550,
-		Volume:   120,
-		IsClosed: true,
+		Volume:    120,
+		IsClosed:  true,
 		Timestamp: time.Now().UTC().Truncate(time.Second),
 	}
 	if err := pub.PublishCandle(ctx, want); err != nil {

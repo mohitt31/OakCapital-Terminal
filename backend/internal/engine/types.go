@@ -49,10 +49,10 @@ type LevelChange struct {
 }
 
 type Trade struct {
-	Price        int   `json:"price"`
-	Qty          int   `json:"qty"`
-	MakerOrderID int   `json:"maker_order_id"`
-	TakerOrderID int   `json:"taker_order_id"`
+	Price             int   `json:"price"`
+	Qty               int   `json:"qty"`
+	MakerOrderID      int   `json:"maker_order_id"`
+	TakerOrderID      int   `json:"taker_order_id"`
 	TimestampUnixNano int64 `json:"timestamp_unix_nano"`
 }
 

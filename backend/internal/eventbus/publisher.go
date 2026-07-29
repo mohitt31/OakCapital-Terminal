@@ -14,23 +14,23 @@ import (
 
 const (
 	// --- Redis Streams (durable) ---
-	StreamTrades  = "events:trades:stream:%s"        // %s = symbol
-	StreamOrders  = "events:orders:stream"            // global
-	StreamCandles = "events:candle:stream:%s:%s"      // %s = symbol, %s = interval
-	StreamErrors  = "events:error:stream"             // global durable error log
+	StreamTrades    = "events:trades:stream:%s"    // %s = symbol
+	StreamOrders    = "events:orders:stream"       // global
+	StreamCandles   = "events:candle:stream:%s:%s" // %s = symbol, %s = interval
+	StreamErrors    = "events:error:stream"        // global durable error log
 	StreamAlerts    = "events:alerts:stream"
 	StreamBotStatus = "events:bot:stream"
 
 	// --- Redis Pub/Sub (ephemeral) ---
-	PubSubOrderUser  = "events:orders:pubsub:%s"    // %s = userID
-	PubSubDepth      = "events:depth:pubsub:%s"     // %s = symbol
-	PubSubTicker     = "events:ticker:pubsub:%s"    // %s = symbol
-	PubSubCandle     = "events:candle:pubsub:%s:%s" // %s = symbol, %s = interval
-	PubSubGBM        = "events:gbm:pubsub:%s"       // %s = symbol
-	PubSubPortfolio  = "events:portfolio:pubsub:%s" // %s = userID
-	PubSubAlert      = "events:alert:pubsub:%s"     // %s = userID
-	PubSubBotStatus  = "events:bot:pubsub:%s"       // %s = botID
-	PubSubHealth     = "events:health:pubsub:system" // singleton system channel
+	PubSubOrderUser = "events:orders:pubsub:%s"     // %s = userID
+	PubSubDepth     = "events:depth:pubsub:%s"      // %s = symbol
+	PubSubTicker    = "events:ticker:pubsub:%s"     // %s = symbol
+	PubSubCandle    = "events:candle:pubsub:%s:%s"  // %s = symbol, %s = interval
+	PubSubGBM       = "events:gbm:pubsub:%s"        // %s = symbol
+	PubSubPortfolio = "events:portfolio:pubsub:%s"  // %s = userID
+	PubSubAlert     = "events:alert:pubsub:%s"      // %s = userID
+	PubSubBotStatus = "events:bot:pubsub:%s"        // %s = botID
+	PubSubHealth    = "events:health:pubsub:system" // singleton system channel
 )
 
 // ---------------------------------------------------------------------------
@@ -106,7 +106,7 @@ func (p *Publisher) PublishPortfolio(ctx context.Context, ev PortfolioEvent) err
 
 // Publish alert
 func (p *Publisher) PublishAlert(ctx context.Context, ev AlertEvent) error {
-	_ = p.xadd(ctx, StreamAlerts, ev) // durable
+	_ = p.xadd(ctx, StreamAlerts, ev)                             // durable
 	return p.pubsub(ctx, fmt.Sprintf(PubSubAlert, ev.UserID), ev) // real-time
 }
 
@@ -114,7 +114,7 @@ func (p *Publisher) PublishAlert(ctx context.Context, ev AlertEvent) error {
 
 // Publish status
 func (p *Publisher) PublishBotStatus(ctx context.Context, ev BotStatusEvent) error {
-	_ = p.xadd(ctx, StreamBotStatus, ev) // durable
+	_ = p.xadd(ctx, StreamBotStatus, ev)                             // durable
 	return p.pubsub(ctx, fmt.Sprintf(PubSubBotStatus, ev.BotID), ev) // real-time
 }
 

@@ -118,9 +118,9 @@ func ComputeMACD(buf []float64, fastPeriod, slowPeriod, signalPeriod int) *MACDR
 
 // BollingerResult holds the three Bollinger Band values.
 type BollingerResult struct {
-	Upper  float64
-	Mid    float64
-	Lower  float64
+	Upper float64
+	Mid   float64
+	Lower float64
 }
 
 // ComputeBollinger returns Bollinger Bands (upper, mid, lower).

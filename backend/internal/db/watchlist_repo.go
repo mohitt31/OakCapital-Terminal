@@ -8,8 +8,8 @@ import (
 
 // WatchlistItem is one row returned from a user's watchlist query.
 type WatchlistItem struct {
-	Symbol   string    `json:"symbol"`
-	AddedAt  time.Time `json:"added_at"`
+	Symbol  string    `json:"symbol"`
+	AddedAt time.Time `json:"added_at"`
 }
 
 // WatchlistRepo performs direct PostgreSQL reads/writes for user watchlists.

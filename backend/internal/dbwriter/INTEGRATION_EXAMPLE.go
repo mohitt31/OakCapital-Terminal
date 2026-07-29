@@ -56,10 +56,10 @@ func exampleMainIntegration() {
 		// Single call to start all database writers
 		dbWriterSvc = dbwriter.StartDBWriters(
 			ctx,
-			bus.Sub,           // Redis subscriber
-			db.Pool,           // PostgreSQL pool
-			symbolMap,         // symbol → instrument_id map
-			allSymbols,        // ["RELIANCE", "TCS", ...]
+			bus.Sub,    // Redis subscriber
+			db.Pool,    // PostgreSQL pool
+			symbolMap,  // symbol → instrument_id map
+			allSymbols, // ["RELIANCE", "TCS", ...]
 		)
 		log.Println("Database writers initialized")
 
@@ -151,9 +151,9 @@ func advancedDBWriterSetup(
 
 	// Access repos for custom operations
 	repos := svc.GetRepositories()
-	_ = repos.Trade    // Use for backfilled trade ingestion
-	_ = repos.Order    // Use for order reconciliation
-	_ = repos.Error    // Use for error replay
+	_ = repos.Trade // Use for backfilled trade ingestion
+	_ = repos.Order // Use for order reconciliation
+	_ = repos.Error // Use for error replay
 	// etc.
 
 	return svc

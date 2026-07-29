@@ -1,78 +1,80 @@
-# 🏛️ OakCapital: High-Frequency Trading Engine & Quant Terminal
+# OakCapital: HFT Trading Engine & Quant Terminal
 
-> 🏆 **2nd Prize — OpenSoft General Championship, IIT Kharagpur**
+**2nd Prize — OpenSoft General Championship, IIT Kharagpur.**
 
 <div align="center">
   <img src="./assets/demo_terminal.png" alt="Live Trading Terminal — Order Book + TradingView Chart" width="100%">
-  <p><em>Live Terminal: Real-time Limit Order Book | TradingView Chart with EMA indicators | Order Execution Controls</em></p>
+  <p><em>Live terminal: real-time limit order book, TradingView chart, order execution controls.</em></p>
 </div>
 
 <br/>
 
 <div align="center">
-  <img src="./assets/demo_bot.png" alt="Alpha Bot Strategy Editor — Node-based Algorithmic Trading" width="49%">
+  <img src="./assets/demo_bot.png" alt="Alpha Bot Strategy Editor" width="49%">
   &nbsp;
-  <img src="./assets/demo_portfolio.png" alt="Portfolio Manager — Live PnL, Positions, Holdings" width="49%">
-</div>
-<div align="center">
-  <p><em>Left: Alpha Bot Strategy Editor (visual node-based algo trading builder) &nbsp;|&nbsp; Right: Live Portfolio with Open Positions</em></p>
+  <img src="./assets/demo_portfolio.png" alt="Portfolio Manager" width="49%">
 </div>
 
 <br/>
 
 <div align="center">
-  <img src="./assets/demo_markets.png" alt="OakCapital Markets Dashboard — Live Streaming Prices" width="100%">
-  <p><em>Markets Dashboard: Live streaming prices, Top Gainers/Losers, Featured assets</em></p>
+  <img src="./assets/demo_markets.png" alt="Markets Dashboard" width="100%">
 </div>
 
 <br/>
 
-**OakCapital** is an institutional-grade algorithmic trading platform built from the ground up for the IIT Kharagpur OpenSoft General Championship. It consists of three modules: a high-performance C++ matching engine, a concurrent Go API layer, and a professional React trading terminal.
+An algorithmic trading platform built for the IIT Kharagpur OpenSoft General Championship: a C++ matching engine, a Go API layer, and a React trading terminal.
 
-🌐 **Live Demo:** [oakcapital.tech/terminal](https://oakcapital.tech/terminal)
+**Live demo:** [oakcapital.tech/terminal](https://oakcapital.tech/terminal)
 
----
+## Matching engine
 
-## ⚡ Core Architecture: The C++ Matching Engine
+My primary contribution: the Limit Order Book (LOB) and matching engine, in `backend/Matching-Engine/`.
 
-As an aspiring Quantitative Developer, my primary focus and contribution was architecting the **Limit Order Book (LOB) and Matching Engine** entirely in C++, designed to handle HFT-scale workloads.
+- AVL-tree price levels: `O(log M)` insert for a new price level, `O(1)` best-bid/ask lookup (M = number of distinct price levels).
+- Each price level holds a doubly-linked list of resting orders — `O(1)` execution and cancellation, strict price-time (FIFO) priority.
+- Served to the Go backend through a CGO bridge (C ABI, no IPC) — see `backend/Matching-Engine/include/engine_c_api.h`.
 
-It was stress-tested to process **over 1.4 Million orders/second**.
+**Benchmark status:** an earlier draft of this README quoted a 1.4M orders/sec figure. I could not find a benchmark script, log, or CI run anywhere in the repo backing that number, so I removed it rather than repeat an unverifiable claim. See "Open items" below — this needs an actual order-injection benchmark committed to the repo before it's re-quoted.
 
-- **AVL Tree Price Levels**: Custom AVL tree implementation maintains ordered price levels, guaranteeing `O(log M)` inserts for new price levels and `O(1)` access to best bid/ask at any moment.
-- **O(1) Order Execution**: Each AVL node holds a doubly-linked list of resting orders, ensuring deterministic `O(1)` execution and cancellation, maintaining strict Price-Time (FIFO) priority.
-- **Cache-Optimal Memory Layout**: Memory structures were deliberately chosen to maximize spatial locality (L1/L2 cache hits) and minimize TLB pressure when processing continuous order streams.
+## Go / API layer
 
-## 🌉 CGO Bridge: Go ↔ C++ Integration
+Concurrent REST + WebSocket API, PostgreSQL persistence, real-time order-book state delivery. See `backend/docs/` for the API spec, architecture notes, and CGO integration details.
 
-To serve the matching engine over a network without sacrificing performance, I built a **CGO bridge** that exposes the C++ static library through a clean C ABI, callable directly from Go.
+## Alpha Bot strategy editor
 
-- The Go server calls into C++ at native speed, avoiding IPC overhead entirely.
-- The layer manages concurrent REST endpoints, WebSocket broadcasting, PostgreSQL persistence, and real-time Order Book state delivery to the frontend.
+Node-based visual editor for composing trading strategies without writing code: price-feed sources, indicator nodes (SMA/EMA/RSI/MACD/Bollinger), condition nodes (crossover/threshold/logic gates), action nodes (market buy/sell, stop loss). Compiles to a strategy JSON executed against the live matching engine.
 
-## 🤖 Alpha Bot Strategy Editor (Visual Algo Builder)
+## Markets & portfolio
 
-A node-based visual editor (see screenshot above) that lets users compose algorithmic trading strategies without writing code:
-- **Data Sources**: Price Feed nodes
-- **Indicators**: SMA, EMA, RSI, MACD, Bollinger Bands
-- **Conditions**: Crossover, Threshold, AND/OR logic gates
-- **Actions**: Market Buy, Market Sell, Stop Loss
+Live streaming prices across 10+ symbols with a gainers/losers board; portfolio manager with real-time PnL, positions, cash, and equity.
 
-Nodes are wired together visually, compiled into a strategy JSON, and executed against the live matching engine in real-time.
-
-## 📊 Markets & Portfolio Modules
-
-- **Markets Dashboard**: Live streaming prices for 10+ symbols (BTC, AAPL, NVDA, TSLA, etc.) with a Top Gainers/Losers leaderboard
-- **Portfolio Manager**: Real-time PnL tracking, open positions (LONG/SHORT), Cash, Holdings and Equity calculations
-
-## 🛠️ Technology Stack
+## Stack
 
 | Layer | Technologies |
 |---|---|
-| Matching Engine | C++17, STL, CMake |
+| Matching engine | C++17, STL, CMake |
 | Backend / API | Go, CGO, WebSockets, PostgreSQL |
 | Frontend | React, TypeScript, Vite, Tailwind CSS, TradingView Lightweight Charts |
 
+## Build
+
+```bash
+cd backend/Matching-Engine
+mkdir -p build && cd build
+cmake .. && make
+```
+
+Produces `libmatching_engine_core.a` (static lib, linked by CGO), `libmatching_engine_c_api.dylib`, and the `matching_engine_smoke` test binary.
+
+For the Go backend and frontend, see `backend/README.md` and `frontend/README.md`.
+
+## Open items
+
+- No benchmark harness exists yet for the matching engine's throughput. Adding one (order generator + `taskset`-pinned timing loop, same style as `mf-kernels`) is the highest-priority fix — see the audit for detail.
+- `backend/Matching-Engine/tests/bookTests.cpp` is currently an empty file; either fill it in or remove it.
+- No LICENSE file — see `LICENSE` (MIT, added).
+
 ---
 
-> *For Quant/HFT/Core Systems recruiters: the primary C++ source is under `/backend/Matching-Engine/`*
+*For quant/HFT/systems reviewers: the primary C++ source is under `backend/Matching-Engine/`.*

@@ -73,13 +73,13 @@ const (
 
 // Event is a single structured system log entry.
 type Event struct {
-	ServiceName string            `json:"service_name"`
-	EventType   EventType         `json:"event_type"`
-	Severity    Severity          `json:"severity"`
-	Message     string            `json:"message"`
-	Details     map[string]any    `json:"details,omitempty"`
-	DurationMs  int               `json:"duration_ms,omitempty"`
-	Timestamp   time.Time         `json:"timestamp"`
+	ServiceName string         `json:"service_name"`
+	EventType   EventType      `json:"event_type"`
+	Severity    Severity       `json:"severity"`
+	Message     string         `json:"message"`
+	Details     map[string]any `json:"details,omitempty"`
+	DurationMs  int            `json:"duration_ms,omitempty"`
+	Timestamp   time.Time      `json:"timestamp"`
 }
 
 // ---------------------------------------------------------------------------

@@ -218,7 +218,7 @@ func (s *Subscriber) ConsumeCandlesBatchGroup(ctx context.Context, symbol, inter
 
 		// Phase 2: continuous batched polling for new messages.
 		var (
-			batch   []CandleEvent
+			batch    []CandleEvent
 			batchIDs []string // stream message IDs corresponding to batch entries
 		)
 
@@ -423,7 +423,7 @@ func (s *Subscriber) consumeStream(ctx context.Context, streamKey, group, consum
 				Group:    group,
 				Consumer: consumer,
 				Streams:  []string{streamKey, ">"},
-				Count:    50,           // Batch size
+				Count:    50, // Batch size
 				Block:    2 * time.Second,
 			}).Result()
 

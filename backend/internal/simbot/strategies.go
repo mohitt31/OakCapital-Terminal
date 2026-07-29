@@ -22,11 +22,11 @@ package simbot
 type StrategyName string
 
 const (
-	StrategyFlagshipV2           StrategyName = "flagship_v2"
-	StrategyBollingerMeanRevert  StrategyName = "bollinger_mean_reversion"
-	StrategyMACDMomentum         StrategyName = "macd_momentum"
-	StrategyRSIReversal          StrategyName = "rsi_reversal"
-	StrategyFastEMATrend         StrategyName = "fast_ema_trend"
+	StrategyFlagshipV2            StrategyName = "flagship_v2"
+	StrategyBollingerMeanRevert   StrategyName = "bollinger_mean_reversion"
+	StrategyMACDMomentum          StrategyName = "macd_momentum"
+	StrategyRSIReversal           StrategyName = "rsi_reversal"
+	StrategyFastEMATrend          StrategyName = "fast_ema_trend"
 	StrategyMACDBollingerBreakout StrategyName = "macd_bollinger_breakout"
 )
 
@@ -68,9 +68,10 @@ func GetStrategy(name StrategyName) (StrategyGraph, string) {
 // sell when it touches the upper band (overbought).
 //
 // Signal wiring:
-//   priceFeed ─────────────────────────► threshBuyVal.value
-//   bollinger(20,2) ─ lower ──────────► threshBuy.value   (price <= lower → buy)
-//   bollinger(20,2) ─ upper ──────────► threshSell.value  (price >= upper → sell)
+//
+//	priceFeed ─────────────────────────► threshBuyVal.value
+//	bollinger(20,2) ─ lower ──────────► threshBuy.value   (price <= lower → buy)
+//	bollinger(20,2) ─ upper ──────────► threshSell.value  (price >= upper → sell)
 //
 // NOTE: The NodeThreshold node takes `value` as the input to compare against the
 // fixed `value` param.  Here we swap usage: we feed the dynamic band value into
@@ -82,18 +83,23 @@ func GetStrategy(name StrategyName) (StrategyGraph, string) {
 // Practical approach:  We wire it so BOTH the price AND the band flow through
 // the graph using two threshold nodes with a fixed reference price as the
 // secondary anchor.  The key insight is that for the LOWER band we want:
-//   price <= lower_band
+//
+//	price <= lower_band
+//
 // We achieve this by feeding the lower band value as the threshold value and
 // the current price as the input, with operator ">=":
-//   inputs["value"] (price) >= params["value"] (lower_band_static)?  — not dynamic.
+//
+//	inputs["value"] (price) >= params["value"] (lower_band_static)?  — not dynamic.
 //
 // Because NodeThreshold only supports a STATIC numeric param["value"], we use the
 // simpler and more robust approach of wiring a CROSSOVER node:
-//   * fastPort = current price
-//   * slowPort = lowerBand
+//   - fastPort = current price
+//   - slowPort = lowerBand
+//
 // when price crosses DOWN through lower band → buy (crossDown)
-//   * fastPort = current price
-//   * slowPort = upperBand
+//   - fastPort = current price
+//   - slowPort = upperBand
+//
 // when price crosses UP through upper band → sell (crossUp)
 // ──────────────────────────────────────────────────────────────────────────────
 func BollingerMeanReversionStrategy() StrategyGraph {
@@ -148,13 +154,15 @@ func BollingerMeanReversionStrategy() StrategyGraph {
 // oversold).
 //
 // Signal wiring:
-//   MACD(12,26,9) → macdLine, signalLine
-//   crossover(macdLine, signalLine):
-//     crossUp   → momentum turning bullish
-//     crossDown → momentum turning bearish
-//   RSI(14) >= 45 → momFilter (confirms upward bias for buy)
-//   AND(crossUp, momFilter) → buy
-//   AND(crossDown, rsiSell) → sell
+//
+//	MACD(12,26,9) → macdLine, signalLine
+//	crossover(macdLine, signalLine):
+//	  crossUp   → momentum turning bullish
+//	  crossDown → momentum turning bearish
+//	RSI(14) >= 45 → momFilter (confirms upward bias for buy)
+//	AND(crossUp, momFilter) → buy
+//	AND(crossDown, rsiSell) → sell
+//
 // ──────────────────────────────────────────────────────────────────────────────
 func MACDMomentumStrategy() StrategyGraph {
 	return StrategyGraph{
@@ -298,11 +306,14 @@ func FastEMATrendStrategy() StrategyGraph {
 // (4 units) to exploit the conviction.
 //
 // Signal wiring:
-//   MACD crossUp  + price > bb.mid  → buy
-//   MACD crossDown + price < bb.mid → sell
+//
+//	MACD crossUp  + price > bb.mid  → buy
+//	MACD crossDown + price < bb.mid → sell
 //
 // For "price > bb.mid" we use the CrossOver node trick again:
-//   crossover(price, mid): crossUp = price just crossed above mid band
+//
+//	crossover(price, mid): crossUp = price just crossed above mid band
+//
 // But since we want a persistent signal (not just the crossing moment), we use
 // a Threshold node wired as: inputs["value"] (price) op params["value"] (static).
 // Because params["value"] can't be dynamic, we use the crossover trick to detect

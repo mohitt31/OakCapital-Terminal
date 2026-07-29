@@ -20,12 +20,12 @@ type Service struct {
 	portfolioWriter *PortfolioWriter
 
 	// Repositories handle actual database operations
-	tradeRepo       *TradeRepository
-	orderRepo       *OrderRepository
-	errorRepo       *ErrorRepository
-	alertRepo       *AlertRepository
-	botStatusRepo   *BotStatusRepository
-	portfolioRepo   *PortfolioSnapshotRepository
+	tradeRepo     *TradeRepository
+	orderRepo     *OrderRepository
+	errorRepo     *ErrorRepository
+	alertRepo     *AlertRepository
+	botStatusRepo *BotStatusRepository
+	portfolioRepo *PortfolioSnapshotRepository
 
 	subscriber *eventbus.Subscriber
 }
@@ -50,12 +50,12 @@ func NewService(sub *eventbus.Subscriber, pool *pgxpool.Pool, symbolMap map[stri
 		botStatusWriter: NewBotStatusWriter(sub),
 		portfolioWriter: NewPortfolioWriter(sub),
 
-		tradeRepo:       NewTradeRepository(pool, symbolMap),
-		orderRepo:       NewOrderRepository(pool),
-		errorRepo:       NewErrorRepository(pool),
-		alertRepo:       NewAlertRepository(pool),
-		botStatusRepo:   NewBotStatusRepository(pool),
-		portfolioRepo:   NewPortfolioSnapshotRepository(pool),
+		tradeRepo:     NewTradeRepository(pool, symbolMap),
+		orderRepo:     NewOrderRepository(pool),
+		errorRepo:     NewErrorRepository(pool),
+		alertRepo:     NewAlertRepository(pool),
+		botStatusRepo: NewBotStatusRepository(pool),
+		portfolioRepo: NewPortfolioSnapshotRepository(pool),
 
 		subscriber: sub,
 	}
@@ -182,26 +182,26 @@ func (s *Service) StartErrorWriter(ctx context.Context) {
 // GetRepositories returns all repository instances for direct use if needed.
 // Useful for running manual queries or batch operations outside the event stream.
 func (s *Service) GetRepositories() struct {
-	Trade       *TradeRepository
-	Order       *OrderRepository
-	Error       *ErrorRepository
-	Alert       *AlertRepository
-	BotStatus   *BotStatusRepository
-	Portfolio   *PortfolioSnapshotRepository
+	Trade     *TradeRepository
+	Order     *OrderRepository
+	Error     *ErrorRepository
+	Alert     *AlertRepository
+	BotStatus *BotStatusRepository
+	Portfolio *PortfolioSnapshotRepository
 } {
 	return struct {
-		Trade       *TradeRepository
-		Order       *OrderRepository
-		Error       *ErrorRepository
-		Alert       *AlertRepository
-		BotStatus   *BotStatusRepository
-		Portfolio   *PortfolioSnapshotRepository
+		Trade     *TradeRepository
+		Order     *OrderRepository
+		Error     *ErrorRepository
+		Alert     *AlertRepository
+		BotStatus *BotStatusRepository
+		Portfolio *PortfolioSnapshotRepository
 	}{
-		Trade:       s.tradeRepo,
-		Order:       s.orderRepo,
-		Error:       s.errorRepo,
-		Alert:       s.alertRepo,
-		BotStatus:   s.botStatusRepo,
-		Portfolio:   s.portfolioRepo,
+		Trade:     s.tradeRepo,
+		Order:     s.orderRepo,
+		Error:     s.errorRepo,
+		Alert:     s.alertRepo,
+		BotStatus: s.botStatusRepo,
+		Portfolio: s.portfolioRepo,
 	}
 }
